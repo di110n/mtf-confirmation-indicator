@@ -2,13 +2,13 @@
 indicator("MTF Confirmation Framework", shorttitle="MTF Confirm", overlay=true)
 
 // -----------------------------------------------------------------------------
-// Inputs: Local trigger
+// Inputs: Base signal
 // -----------------------------------------------------------------------------
-string GROUP_TRIGGER = "Local Trigger"
+string GROUP_BASE_SIGNAL = "Base Signal"
 
-string maType = input.string("EMA", "MA type", options=["EMA", "SMA"], group=GROUP_TRIGGER)
-int fastLength = input.int(20, "Fast MA length", minval=1, group=GROUP_TRIGGER)
-int slowLength = input.int(50, "Slow MA length", minval=1, group=GROUP_TRIGGER)
+string maType = input.string("EMA", "MA type", options=["EMA", "SMA"], group=GROUP_BASE_SIGNAL)
+int fastLength = input.int(20, "Fast MA length", minval=1, group=GROUP_BASE_SIGNAL)
+int slowLength = input.int(50, "Slow MA length", minval=1, group=GROUP_BASE_SIGNAL)
 
 // -----------------------------------------------------------------------------
 // Helpers
@@ -22,7 +22,7 @@ ma(float source, int length, string type) =>
         => emaValue
 
 // -----------------------------------------------------------------------------
-// Local trigger
+// Base signal
 // -----------------------------------------------------------------------------
 float fastMA = ma(close, fastLength, maType)
 float slowMA = ma(close, slowLength, maType)
