@@ -11,6 +11,17 @@ int fastLength = input.int(20, "Fast MA length", minval=1, group=GROUP_BASE_SIGN
 int slowLength = input.int(50, "Slow MA length", minval=1, group=GROUP_BASE_SIGNAL)
 
 // -----------------------------------------------------------------------------
+// Inputs: Higher timeframe
+// -----------------------------------------------------------------------------
+string GROUP_HTF = "Higher Timeframe"
+
+bool htfEnabled = input.bool(true, "Enable HTF confirmation", group=GROUP_HTF)
+string htfTimeframe = input.timeframe("60", "HTF timeframe", group=GROUP_HTF)
+string htfMaType = input.string("EMA", "HTF MA type", options=["EMA", "SMA"], group=GROUP_HTF)
+int htfMaLength = input.int(50, "HTF MA length", minval=1, group=GROUP_HTF)
+bool showHtfBackground = input.bool(false, "Show HTF trend background", group=GROUP_HTF)
+
+// -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
 ma(float source, int length, string type) =>
@@ -30,9 +41,38 @@ float slowMA = ma(close, slowLength, maType)
 bool longCross = ta.crossover(fastMA, slowMA)
 bool shortCross = ta.crossunder(fastMA, slowMA)
 
+// -----------------------------------------------------------------------------
+// Higher-timeframe confirmation
+// -----------------------------------------------------------------------------
+// TradingView's recommended non-repainting HTF pattern is to offset the
+// requested expression by one HTF bar and use lookahead_on. This returns the
+// last confirmed HTF value consistently on historical and realtime bars.
+float htfClose = request.security(
+    syminfo.tickerid,
+    htfTimeframe,
+    close[1],
+    lookahead=barmerge.lookahead_on
+)
+
+float htfMA = request.security(
+    syminfo.tickerid,
+    htfTimeframe,
+    ma(close, htfMaLength, htfMaType)[1],
+    lookahead=barmerge.lookahead_on
+)
+
+bool htfBullish = htfClose > htfMA
+bool htfBearish = htfClose < htfMA
+
+bool htfLongAllowed = not htfEnabled or htfBullish
+bool htfShortAllowed = not htfEnabled or htfBearish
+
+// -----------------------------------------------------------------------------
+// Final signals
+// -----------------------------------------------------------------------------
 // Signals are accepted only after the chart bar is confirmed.
-bool longTrigger = longCross and barstate.isconfirmed
-bool shortTrigger = shortCross and barstate.isconfirmed
+bool longSignal = longCross and barstate.isconfirmed and htfLongAllowed
+bool shortSignal = shortCross and barstate.isconfirmed and htfShortAllowed
 
 // -----------------------------------------------------------------------------
 // Visuals
@@ -40,5 +80,8 @@ bool shortTrigger = shortCross and barstate.isconfirmed
 plot(fastMA, "Fast MA", color=color.orange, linewidth=2)
 plot(slowMA, "Slow MA", color=color.blue, linewidth=2)
 
-plotshape(longTrigger, title="Long Trigger", style=shape.triangleup, location=location.belowbar, size=size.small, text="L")
-plotshape(shortTrigger, title="Short Trigger", style=shape.triangledown, location=location.abovebar, size=size.small, text="S")
+plotshape(longSignal, title="Long Signal", style=shape.triangleup, location=location.belowbar, size=size.small, text="L")
+plotshape(shortSignal, title="Short Signal", style=shape.triangledown, location=location.abovebar, size=size.small, text="S")
+
+color htfBackground = htfBullish ? color.new(color.green, 90) : htfBearish ? color.new(color.red, 90) : na
+bgcolor(showHtfBackground and htfEnabled ? htfBackground : na, title="HTF Trend")
