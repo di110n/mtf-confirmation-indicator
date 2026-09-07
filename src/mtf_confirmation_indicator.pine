@@ -37,8 +37,8 @@ bool shortTrigger = shortCross and barstate.isconfirmed
 // -----------------------------------------------------------------------------
 // Visuals
 // -----------------------------------------------------------------------------
-plot(fastMA, "Fast MA", linewidth=2)
-plot(slowMA, "Slow MA", linewidth=2)
+plot(fastMA, "Fast MA", color=color.orange, linewidth=2)
+plot(slowMA, "Slow MA", color=color.blue, linewidth=2)
 
 plotshape(longTrigger, title="Long Trigger", style=shape.triangleup, location=location.belowbar, size=size.small, text="L")
 plotshape(shortTrigger, title="Short Trigger", style=shape.triangledown, location=location.abovebar, size=size.small, text="S")
