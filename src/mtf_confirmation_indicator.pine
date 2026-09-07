@@ -22,6 +22,17 @@ int htfMaLength = input.int(50, "HTF MA length", minval=1, group=GROUP_HTF)
 bool showHtfBackground = input.bool(false, "Show HTF trend background", group=GROUP_HTF)
 
 // -----------------------------------------------------------------------------
+// Inputs: External confirmation
+// -----------------------------------------------------------------------------
+string GROUP_EXTERNAL = "External Confirmation"
+
+bool externalEnabled = input.bool(false, "Enable external confirmation", group=GROUP_EXTERNAL)
+string externalSymbol = input.symbol("BINANCE:BTCUSDT", "External symbol", group=GROUP_EXTERNAL)
+string externalTimeframe = input.timeframe("", "External timeframe", group=GROUP_EXTERNAL)
+int externalMaLength = input.int(50, "External MA length", minval=1, group=GROUP_EXTERNAL)
+string externalRelationship = input.string("Same direction", "Relationship", options=["Same direction", "Inverse direction"], group=GROUP_EXTERNAL)
+
+// -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
 ma(float source, int length, string type) =>
@@ -68,11 +79,37 @@ bool htfLongAllowed = not htfEnabled or htfBullish
 bool htfShortAllowed = not htfEnabled or htfBearish
 
 // -----------------------------------------------------------------------------
+// External-symbol confirmation
+// -----------------------------------------------------------------------------
+// An empty timeframe input means "same as chart" in request.security().
+float externalClose = request.security(
+    externalSymbol,
+    externalTimeframe,
+    close
+)
+
+float externalMA = request.security(
+    externalSymbol,
+    externalTimeframe,
+    ta.ema(close, externalMaLength)
+)
+
+bool externalBullish = externalClose > externalMA
+bool externalBearish = externalClose < externalMA
+bool externalInverse = externalRelationship == "Inverse direction"
+
+bool externalLongCondition = externalInverse ? externalBearish : externalBullish
+bool externalShortCondition = externalInverse ? externalBullish : externalBearish
+
+bool externalLongAllowed = not externalEnabled or externalLongCondition
+bool externalShortAllowed = not externalEnabled or externalShortCondition
+
+// -----------------------------------------------------------------------------
 // Final signals
 // -----------------------------------------------------------------------------
 // Signals are accepted only after the chart bar is confirmed.
-bool longSignal = longCross and barstate.isconfirmed and htfLongAllowed
-bool shortSignal = shortCross and barstate.isconfirmed and htfShortAllowed
+bool longSignal = longCross and barstate.isconfirmed and htfLongAllowed and externalLongAllowed
+bool shortSignal = shortCross and barstate.isconfirmed and htfShortAllowed and externalShortAllowed
 
 // -----------------------------------------------------------------------------
 // Visuals
