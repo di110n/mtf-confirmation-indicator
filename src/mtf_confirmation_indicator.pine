@@ -14,9 +14,12 @@ int slowLength = input.int(50, "Slow MA length", minval=1, group=GROUP_TRIGGER)
 // Helpers
 // -----------------------------------------------------------------------------
 ma(float source, int length, string type) =>
+    float smaValue = ta.sma(source, length)
+    float emaValue = ta.ema(source, length)
+
     switch type
-        "SMA" => ta.sma(source, length)
-        => ta.ema(source, length)
+        "SMA" => smaValue
+        => emaValue
 
 // -----------------------------------------------------------------------------
 // Local trigger
@@ -24,9 +27,12 @@ ma(float source, int length, string type) =>
 float fastMA = ma(close, fastLength, maType)
 float slowMA = ma(close, slowLength, maType)
 
+bool longCross = ta.crossover(fastMA, slowMA)
+bool shortCross = ta.crossunder(fastMA, slowMA)
+
 // Signals are accepted only after the chart bar is confirmed.
-bool longTrigger = barstate.isconfirmed and ta.crossover(fastMA, slowMA)
-bool shortTrigger = barstate.isconfirmed and ta.crossunder(fastMA, slowMA)
+bool longTrigger = longCross and barstate.isconfirmed
+bool shortTrigger = shortCross and barstate.isconfirmed
 
 // -----------------------------------------------------------------------------
 // Visuals
