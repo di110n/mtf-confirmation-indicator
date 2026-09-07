@@ -1,0 +1,38 @@
+//@version=6
+indicator("MTF Confirmation Framework", shorttitle="MTF Confirm", overlay=true)
+
+// -----------------------------------------------------------------------------
+// Inputs: Local trigger
+// -----------------------------------------------------------------------------
+string GROUP_TRIGGER = "Local Trigger"
+
+string maType = input.string("EMA", "MA type", options=["EMA", "SMA"], group=GROUP_TRIGGER)
+int fastLength = input.int(20, "Fast MA length", minval=1, group=GROUP_TRIGGER)
+int slowLength = input.int(50, "Slow MA length", minval=1, group=GROUP_TRIGGER)
+
+// -----------------------------------------------------------------------------
+// Helpers
+// -----------------------------------------------------------------------------
+ma(float source, int length, string type) =>
+    switch type
+        "SMA" => ta.sma(source, length)
+        => ta.ema(source, length)
+
+// -----------------------------------------------------------------------------
+// Local trigger
+// -----------------------------------------------------------------------------
+float fastMA = ma(close, fastLength, maType)
+float slowMA = ma(close, slowLength, maType)
+
+// Signals are accepted only after the chart bar is confirmed.
+bool longTrigger = barstate.isconfirmed and ta.crossover(fastMA, slowMA)
+bool shortTrigger = barstate.isconfirmed and ta.crossunder(fastMA, slowMA)
+
+// -----------------------------------------------------------------------------
+// Visuals
+// -----------------------------------------------------------------------------
+plot(fastMA, "Fast MA", linewidth=2)
+plot(slowMA, "Slow MA", linewidth=2)
+
+plotshape(longTrigger, title="Long Trigger", style=shape.triangleup, location=location.belowbar, size=size.small, text="L")
+plotshape(shortTrigger, title="Short Trigger", style=shape.triangledown, location=location.abovebar, size=size.small, text="S")
