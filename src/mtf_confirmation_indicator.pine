@@ -31,7 +31,7 @@ string externalSymbol = input.symbol("BINANCE:BTCUSDT", "External symbol", group
 string externalTimeframe = input.timeframe("", "External timeframe", group=GROUP_EXTERNAL)
 int externalMaLength = input.int(50, "External MA length", minval=1, group=GROUP_EXTERNAL)
 string externalRelationship = input.string("Same direction", "Relationship", options=["Same direction", "Inverse direction"], group=GROUP_EXTERNAL)
-bool showExternalStatus = input.bool(true, "Show external status", group=GROUP_EXTERNAL)
+bool showExternalBackground = input.bool(false, "Show external trend background", group=GROUP_EXTERNAL)
 
 // -----------------------------------------------------------------------------
 // Helpers
@@ -124,40 +124,5 @@ plotshape(shortSignal, title="Short Signal", style=shape.triangledown, location=
 color htfBackground = htfBullish ? color.new(color.green, 90) : htfBearish ? color.new(color.red, 90) : na
 bgcolor(showHtfBackground and htfEnabled ? htfBackground : na, title="HTF Trend")
 
-// -----------------------------------------------------------------------------
-// External confirmation status
-// -----------------------------------------------------------------------------
-int EXTERNAL_TABLE_COLS = 2
-int EXTERNAL_TABLE_ROWS = 5
-
-var table externalStatus = table.new(
-    position.top_right,
-    EXTERNAL_TABLE_COLS,
-    EXTERNAL_TABLE_ROWS,
-    border_width=1
-)
-
-if barstate.islast
-    if showExternalStatus
-        string externalTrendText = not externalEnabled ? "Disabled" : externalBullish ? "Bullish" : externalBearish ? "Bearish" : "Neutral"
-        string longAllowedText = externalLongAllowed ? "Yes" : "No"
-        string shortAllowedText = externalShortAllowed ? "Yes" : "No"
-
-        table.cell(externalStatus, 0, 0, "External", text_halign=text.align_left)
-        table.cell(externalStatus, 1, 0, externalSymbol, text_halign=text.align_left)
-        table.cell(externalStatus, 0, 1, "Trend", text_halign=text.align_left)
-        table.cell(externalStatus, 1, 1, externalTrendText, text_halign=text.align_left)
-        table.cell(externalStatus, 0, 2, "Relationship", text_halign=text.align_left)
-        table.cell(externalStatus, 1, 2, externalRelationship, text_halign=text.align_left)
-        table.cell(externalStatus, 0, 3, "Long allowed", text_halign=text.align_left)
-        table.cell(externalStatus, 1, 3, longAllowedText, text_halign=text.align_left)
-        table.cell(externalStatus, 0, 4, "Short allowed", text_halign=text.align_left)
-        table.cell(externalStatus, 1, 4, shortAllowedText, text_halign=text.align_left)
-    else
-        table.clear(
-            externalStatus,
-            0,
-            0,
-            EXTERNAL_TABLE_COLS - 1,
-            EXTERNAL_TABLE_ROWS - 1
-        )
+color externalBackground = externalBullish ? color.new(color.green, 90) : externalBearish ? color.new(color.red, 90) : na
+bgcolor(showExternalBackground and externalEnabled ? externalBackground : na, title="External Trend")
