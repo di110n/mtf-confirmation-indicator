@@ -92,18 +92,40 @@ bool htfShortAllowed = not htfEnabled or htfBearish
 // -----------------------------------------------------------------------------
 // External-symbol confirmation
 // -----------------------------------------------------------------------------
-// An empty timeframe input means "same as chart" in request.security().
-float externalClose = request.security(
+// An empty timeframe input means "same as chart". When the selected external
+// timeframe is higher than the chart timeframe, use the previous completed
+// external bar so realtime behavior matches historical behavior.
+string externalRequestTimeframe = externalTimeframe == "" ? timeframe.period : externalTimeframe
+bool externalIsHigherTimeframe = timeframe.in_seconds(externalRequestTimeframe) > timeframe.in_seconds(timeframe.period)
+
+float externalCloseCurrent = request.security(
     externalSymbol,
-    externalTimeframe,
+    externalRequestTimeframe,
     close
 )
 
-float externalMA = request.security(
+float externalMACurrent = request.security(
     externalSymbol,
-    externalTimeframe,
+    externalRequestTimeframe,
     ta.ema(close, externalMaLength)
 )
+
+float externalCloseConfirmed = request.security(
+    externalSymbol,
+    externalRequestTimeframe,
+    close[1],
+    lookahead=barmerge.lookahead_on
+)
+
+float externalMAConfirmed = request.security(
+    externalSymbol,
+    externalRequestTimeframe,
+    ta.ema(close, externalMaLength)[1],
+    lookahead=barmerge.lookahead_on
+)
+
+float externalClose = externalIsHigherTimeframe ? externalCloseConfirmed : externalCloseCurrent
+float externalMA = externalIsHigherTimeframe ? externalMAConfirmed : externalMACurrent
 
 bool externalBullish = externalClose > externalMA
 bool externalBearish = externalClose < externalMA
