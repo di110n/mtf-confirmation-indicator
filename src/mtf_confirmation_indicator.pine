@@ -34,6 +34,15 @@ string externalRelationship = input.string("Same direction", "Relationship", opt
 bool showExternalBackground = input.bool(false, "Show external trend background", group=GROUP_EXTERNAL)
 
 // -----------------------------------------------------------------------------
+// Inputs: Display
+// -----------------------------------------------------------------------------
+string GROUP_DISPLAY = "Display"
+
+color bullishBackgroundColor = input.color(color.green, "Bullish background", group=GROUP_DISPLAY)
+color bearishBackgroundColor = input.color(color.red, "Bearish background", group=GROUP_DISPLAY)
+int backgroundTransparency = input.int(90, "Background transparency", minval=0, maxval=100, group=GROUP_DISPLAY)
+
+// -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
 ma(float source, int length, string type) =>
@@ -75,6 +84,7 @@ float htfMA = request.security(
 
 bool htfBullish = htfClose > htfMA
 bool htfBearish = htfClose < htfMA
+bool invalidHtf = htfEnabled and timeframe.in_seconds(htfTimeframe) <= timeframe.in_seconds(timeframe.period)
 
 bool htfLongAllowed = not htfEnabled or htfBullish
 bool htfShortAllowed = not htfEnabled or htfBearish
@@ -121,8 +131,38 @@ plot(slowMA, "Slow MA", color=color.blue, linewidth=2)
 plotshape(longSignal, title="Long Signal", style=shape.triangleup, location=location.belowbar, size=size.small, text="L")
 plotshape(shortSignal, title="Short Signal", style=shape.triangledown, location=location.abovebar, size=size.small, text="S")
 
-color htfBackground = htfBullish ? color.new(color.green, 90) : htfBearish ? color.new(color.red, 90) : na
+color bullishBackground = color.new(bullishBackgroundColor, backgroundTransparency)
+color bearishBackground = color.new(bearishBackgroundColor, backgroundTransparency)
+
+color htfBackground = htfBullish ? bullishBackground : htfBearish ? bearishBackground : na
 bgcolor(showHtfBackground and htfEnabled ? htfBackground : na, title="HTF Trend")
 
-color externalBackground = externalBullish ? color.new(color.green, 90) : externalBearish ? color.new(color.red, 90) : na
+color externalBackground = externalBullish ? bullishBackground : externalBearish ? bearishBackground : na
 bgcolor(showExternalBackground and externalEnabled ? externalBackground : na, title="External Trend")
+
+// -----------------------------------------------------------------------------
+// Validation
+// -----------------------------------------------------------------------------
+plotshape(
+    invalidHtf,
+    title="Invalid HTF Warning",
+    style=shape.labeldown,
+    location=location.top,
+    text="HTF must be higher than chart TF",
+    size=size.tiny
+)
+
+// -----------------------------------------------------------------------------
+// Alerts
+// -----------------------------------------------------------------------------
+alertcondition(
+    longSignal,
+    title="Long Signal",
+    message="MTF Confirmation LONG\nSymbol: {{ticker}}\nPrice: {{close}}\nTimeframe: {{interval}}"
+)
+
+alertcondition(
+    shortSignal,
+    title="Short Signal",
+    message="MTF Confirmation SHORT\nSymbol: {{ticker}}\nPrice: {{close}}\nTimeframe: {{interval}}"
+)
