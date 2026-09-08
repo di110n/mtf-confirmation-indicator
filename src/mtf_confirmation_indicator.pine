@@ -127,7 +127,15 @@ bgcolor(showHtfBackground and htfEnabled ? htfBackground : na, title="HTF Trend"
 // -----------------------------------------------------------------------------
 // External confirmation status
 // -----------------------------------------------------------------------------
-var table externalStatus = table.new(position.top_right, 2, 5, border_width=1)
+int EXTERNAL_TABLE_COLS = 2
+int EXTERNAL_TABLE_ROWS = 5
+
+var table externalStatus = table.new(
+    position.top_right,
+    EXTERNAL_TABLE_COLS,
+    EXTERNAL_TABLE_ROWS,
+    border_width=1
+)
 
 if barstate.islast
     if showExternalStatus
@@ -146,4 +154,10 @@ if barstate.islast
         table.cell(externalStatus, 0, 4, "Short allowed", text_halign=text.align_left)
         table.cell(externalStatus, 1, 4, shortAllowedText, text_halign=text.align_left)
     else
-        table.clear(externalStatus)
+        table.clear(
+            externalStatus,
+            0,
+            0,
+            EXTERNAL_TABLE_COLS - 1,
+            EXTERNAL_TABLE_ROWS - 1
+        )
