@@ -14,7 +14,7 @@ The project now includes:
 - Optional HTF trend background for visual verification
 - Optional external-symbol confirmation
 - Same-direction or inverse-direction external confirmation
-- External confirmation status table for visual verification
+- Optional external trend background for historical verification
 - Clean grouped inputs
 - Distinct fast/slow MA colors
 
@@ -40,7 +40,7 @@ Turn a simple trading rule into a reliable, non-repainting indicator architectur
 
 - Validate external-symbol confirmation behavior
 - Add invalid HTF selection warning
-- Expand diagnostics
+- Add diagnostics
 - Add alerts
 - Complete repainting and edge-case tests
 - Refactor and package for portfolio use
