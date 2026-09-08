@@ -149,6 +149,8 @@ plotshape(
     title="Invalid HTF Warning",
     style=shape.labeldown,
     location=location.top,
+    color=color.orange,
+    textcolor=color.black,
     text="HTF must be higher than chart TF",
     size=size.tiny
 )
