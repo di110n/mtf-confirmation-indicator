@@ -13,6 +13,7 @@ The project now includes:
 - Confirmed HTF values using the previous completed HTF bar
 - Optional HTF trend background for visual verification
 - Optional external-symbol confirmation
+- Confirmed external values when the selected external timeframe is higher than the chart timeframe
 - Same-direction or inverse-direction external confirmation
 - Optional external trend background for historical verification
 - Shared bullish/bearish background colors and transparency controls
