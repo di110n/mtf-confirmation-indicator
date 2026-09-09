@@ -33,24 +33,6 @@ This makes it useful as a reusable framework for turning discretionary confirmat
 - Dedicated Long Signal and Short Signal TradingView alert conditions
 - Clean grouped inputs
 
-## Signal architecture
-
-```text
-Base MA crossover
-        ↓
-Higher-timeframe confirmation
-        ↓
-External-symbol confirmation
-        ↓
-Confirmed chart bar
-        ↓
-Final long / short signal
-        ↓
-TradingView alert conditions
-```
-
-Disabled confirmation modules evaluate as allowed, so the indicator can be tested and used incrementally.
-
 ## Timeframe behavior
 
 ### Higher-timeframe confirmation
@@ -82,7 +64,7 @@ The current version has been manually verified in TradingView for:
 
 ## Screenshots
 
-Portfolio screenshots demonstrate:
+Screenshots demonstrate:
 
 1. Base crossover mode with both confirmation modules disabled
 2. Higher-timeframe confirmation with HTF trend background
