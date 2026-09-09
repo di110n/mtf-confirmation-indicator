@@ -1,27 +1,37 @@
 # MTF Confirmation Indicator
 
-A TradingView Pine Script v6 indicator project focused on deterministic, testable multi-timeframe signal confirmation.
+A TradingView Pine Script v6 indicator that turns a simple moving-average crossover into a configurable confirmation framework using higher-timeframe trend, optional external-symbol confirmation, closed-bar signal logic, validation, and TradingView alerts.
 
-## Current status
+## What it does
 
-The project now includes:
+The indicator starts with a configurable fast/slow moving-average crossover on the chart timeframe, then lets you filter those signals using:
 
-- Configurable fast/slow moving-average base signal
-- EMA/SMA selection for the base signal
-- Confirmed-bar crossover signals
+- Higher-timeframe trend confirmation
+- Optional external-symbol confirmation
+- Same-direction or inverse external relationships
+- Confirmed chart-bar signal timing
+- TradingView alert conditions
+
+This makes it useful as a reusable framework for turning discretionary confirmation rules into deterministic Pine Script logic.
+
+## Features
+
+- Pine Script v6
+- Configurable EMA/SMA base signal
+- Fast/slow moving-average crossover logic
+- Closed-bar long and short signals
 - Higher-timeframe confirmation
 - Confirmed HTF values using the previous completed HTF bar
 - Optional HTF trend background for visual verification
 - Optional external-symbol confirmation
 - Confirmed external values when the selected external timeframe is higher than the chart timeframe
-- External confirmation is intended for chart timeframe or higher; lower external timeframes are not part of the v1 support contract
 - Same-direction or inverse-direction external confirmation
 - Optional external trend background for historical verification
 - Shared bullish/bearish background colors and transparency controls
-- HTF filter automatically disables when the selected HTF is equal to or lower than the chart timeframe, with a clear chart warning
-- Long and short alert conditions that match the plotted signals
+- HTF filter automatically disables when the selected HTF is equal to or lower than the chart timeframe
+- Clear chart warning for invalid HTF selection
+- Dedicated Long Signal and Short Signal TradingView alert conditions
 - Clean grouped inputs
-- Distinct fast/slow MA colors
 
 ## Signal architecture
 
@@ -39,22 +49,48 @@ Final long / short signal
 TradingView alert conditions
 ```
 
-Disabled confirmation modules evaluate as allowed, so the indicator can be tested incrementally.
+Disabled confirmation modules evaluate as allowed, so the indicator can be tested and used incrementally.
 
-## Validation status
+## Timeframe behavior
 
-Verified in TradingView:
+### Higher-timeframe confirmation
 
-- HTF confirmation behavior on lower chart timeframes
-- HTF warning display
-- Long and short alert conditions appear in the alert dialog
+The HTF module uses the previous completed higher-timeframe bar so historical and realtime behavior remain consistent.
+
+If the selected HTF is equal to or lower than the chart timeframe, the HTF filter is disabled automatically and the indicator shows a warning on the chart.
+
+### External confirmation
+
+External confirmation is intended for the chart timeframe or a higher timeframe.
+
+When the selected external timeframe is higher than the chart timeframe, the indicator uses confirmed external data from the previous completed external bar.
+
+Lower external timeframes are not part of the v1 support contract.
+
+## Validation
+
+The current version has been manually verified in TradingView for:
+
+- Base crossover signals with both confirmation modules disabled
+- HTF filtering enabled independently
+- External-symbol filtering enabled independently
+- HTF and external filtering enabled together
+- Invalid HTF selection with automatic filter disable and warning
+- Historical stability after chart reload
 - External higher-timeframe confirmation on a 1m chart with 5m external data
-- External background changes on 5m boundaries
-- Historical external states remained stable after reload
+- Long Signal and Short Signal availability in the TradingView alert dialog
 
-## Next steps
+## Screenshots
 
-- Run the final acceptance-test sweep
-- Capture clean portfolio screenshots
-- Finalize the client-facing project description
-- Freeze and package the Week 1 version
+Portfolio screenshots demonstrate:
+
+1. Base crossover mode with both confirmation modules disabled
+2. Higher-timeframe confirmation with HTF trend background
+3. Combined HTF and external-symbol confirmation
+4. TradingView Long Signal / Short Signal alert conditions
+
+## Source
+
+Main Pine Script source:
+
+`src/mtf_confirmation_indicator.pine`
