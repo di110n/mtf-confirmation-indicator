@@ -14,10 +14,11 @@ The project now includes:
 - Optional HTF trend background for visual verification
 - Optional external-symbol confirmation
 - Confirmed external values when the selected external timeframe is higher than the chart timeframe
+- External confirmation is intended for chart timeframe or higher; lower external timeframes are not part of the v1 support contract
 - Same-direction or inverse-direction external confirmation
 - Optional external trend background for historical verification
 - Shared bullish/bearish background colors and transparency controls
-- Warning when the selected HTF is equal to or lower than the chart timeframe
+- HTF filter automatically disables when the selected HTF is equal to or lower than the chart timeframe, with a clear chart warning
 - Long and short alert conditions that match the plotted signals
 - Clean grouped inputs
 - Distinct fast/slow MA colors
@@ -44,10 +45,20 @@ Disabled confirmation modules evaluate as allowed, so the indicator can be teste
 
 Turn a simple trading rule into a reliable, non-repainting indicator architecture suitable for portfolio use and future client work.
 
+## Validation status
+
+Verified in TradingView:
+
+- HTF confirmation behavior on lower chart timeframes
+- HTF warning display
+- Long and short alert conditions appear in the alert dialog
+- External higher-timeframe confirmation on a 1m chart with 5m external data
+- External background changes on 5m boundaries
+- Historical external states remained stable after reload
+
 ## Next steps
 
-- Compile and verify the new display settings, HTF warning, and alerts in TradingView
-- Complete the acceptance-test matrix
-- Verify historical reload and realtime behavior
-- Final README cleanup and screenshots
-- Refactor and package the Week 1 version for portfolio use
+- Run the final acceptance-test sweep
+- Capture clean portfolio screenshots
+- Finalize the client-facing project description
+- Freeze and package the Week 1 version
