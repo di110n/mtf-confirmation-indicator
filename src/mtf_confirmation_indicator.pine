@@ -86,8 +86,9 @@ bool htfBullish = htfClose > htfMA
 bool htfBearish = htfClose < htfMA
 bool invalidHtf = htfEnabled and timeframe.in_seconds(htfTimeframe) <= timeframe.in_seconds(timeframe.period)
 
-bool htfLongAllowed = not htfEnabled or htfBullish
-bool htfShortAllowed = not htfEnabled or htfBearish
+bool htfFilterActive = htfEnabled and not invalidHtf
+bool htfLongAllowed = not htfFilterActive or htfBullish
+bool htfShortAllowed = not htfFilterActive or htfBearish
 
 // -----------------------------------------------------------------------------
 // External-symbol confirmation
@@ -173,7 +174,7 @@ plotshape(
     location=location.top,
     color=color.orange,
     textcolor=color.black,
-    text="HTF must be higher than chart TF",
+    text="HTF filter disabled: timeframe must be higher than chart TF",
     size=size.tiny
 )
 
