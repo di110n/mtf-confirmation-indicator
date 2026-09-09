@@ -64,12 +64,29 @@ The current version has been manually verified in TradingView for:
 
 ## Screenshots
 
-Screenshots demonstrate:
+### Base signal mode
 
-1. Base crossover mode with both confirmation modules disabled
-2. Higher-timeframe confirmation with HTF trend background
-3. Combined HTF and external-symbol confirmation
-4. TradingView Long Signal / Short Signal alert conditions
+Base EMA crossover signals with both confirmation filters disabled.
+
+![Base signal mode](docs/images/Base-signal-mode.png)
+
+### Higher-timeframe confirmation
+
+15-minute higher-timeframe trend confirmation filtering signals on a 1-minute chart.
+
+![Higher-timeframe confirmation](docs/images/Higher-timeframe-confirmation.png)
+
+### HTF + external-symbol confirmation
+
+Combined higher-timeframe and BTCUSDT external-symbol confirmation with historical trend visualization.
+
+![HTF and external-symbol confirmation](docs/images/HTF-ES-confirmation.png)
+
+### TradingView alerts
+
+Dedicated Long Signal and Short Signal conditions available directly in TradingView alerts.
+
+![TradingView alerts](docs/images/TradingView-alerts.png)
 
 ## Source
 
