@@ -41,10 +41,6 @@ TradingView alert conditions
 
 Disabled confirmation modules evaluate as allowed, so the indicator can be tested incrementally.
 
-## Project goal
-
-Turn a simple trading rule into a reliable, non-repainting indicator architecture suitable for portfolio use and future client work.
-
 ## Validation status
 
 Verified in TradingView:
